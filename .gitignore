@@ -119,3 +119,11 @@ venv.bak/
 
 # scons build files
 *.dblite
+
+source_subfolder/
+
+conan.lock
+conanbuildinfo.cmake
+conanbuildinfo.txt
+conaninfo.txt
+graph_info.json
