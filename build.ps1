@@ -7,14 +7,14 @@ Write-Host "Adding Mersive's Conan Remote Repository"
 conan remote add mersive "https://artifactory.mersive.xyz/artifactory/api/conan/conan-mersive"
 conan user ci-rustusbip -r mersive -p "$env:ARTIFACTORY_PASSWORD"
 
-function BasicBuild($libraryName, $libraryVersion, $libraryPath)
+function BasicBuild($libraryName, $libraryVersion, $libraryPath, $libraryOptions)
 {
   Write-Host "Performing a build of [$libraryName] with version [$libraryVersion]:"
   pushd "recipes/$libraryName/$libraryPath"
 
   $COORDINATE="$libraryName/$libraryVersion@"
   Write-Host "Installing [$COORDINATE]"
-  conan install . $COORDINATE
+  conan install . $COORDINATE "$libraryOptions"
 
   Write-Host "Getting sources of [$COORDINATE]"
   conan source .
@@ -33,4 +33,4 @@ function BasicBuild($libraryName, $libraryVersion, $libraryPath)
 }
 
 BasicBuild "zlib" $env:ZLIB_VERSION $env:ZLIB_VERSION
-BasicBuild "protobuf" $env:PROTOBUF_VERSION "all"
+BasicBuild "protobuf" $env:PROTOBUF_VERSION "all" "-o protobuf:shared=True"
