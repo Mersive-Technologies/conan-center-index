@@ -1,11 +1,11 @@
-# Write-Host "Installing conan..."
-# choco install conan -y --no-progress
-# $env:Path += ";C:\Program Files\Conan\conan"
-# conan --version
+Write-Host "Installing conan..."
+choco install conan -y --no-progress
+$env:Path += ";C:\Program Files\Conan\conan"
+conan --version
 
-# Write-Host "Adding Mersive's Conan Remote Repository"
-# conan remote add mersive "https://artifactory.mersive.xyz/artifactory/api/conan/conan-mersive"
-# conan user ci-rustusbip -r mersive -p "$env:ARTIFACTORY_PASSWORD"
+Write-Host "Adding Mersive's Conan Remote Repository"
+conan remote add mersive "https://artifactory.mersive.xyz/artifactory/api/conan/conan-mersive"
+conan user ci-rustusbip -r mersive -p "$env:ARTIFACTORY_PASSWORD"
 
 function BasicBuild($libraryName, $libraryVersion, $libraryPath)
 {
@@ -14,7 +14,7 @@ function BasicBuild($libraryName, $libraryVersion, $libraryPath)
 
   $COORDINATE="$libraryName/$libraryVersion@"
   Write-Host "Installing [$COORDINATE]"
-  conan install .
+  conan install . $COORDINATE
 
   Write-Host "Getting sources of [$COORDINATE]"
   conan source .
@@ -26,11 +26,11 @@ function BasicBuild($libraryName, $libraryVersion, $libraryPath)
   conan export-pkg . "$COORDINATE"
 
   Write-Host "Uploading [$COORDINATE]"
-  # conan upload "$COORDINATE" --all -c -r mersive
+  conan upload "$COORDINATE" --all -c -r mersive
 
   Write-Host "Done building [$COORDINATE]!"
   popd
 }
 
-# BasicBuild "zlib" $env:ZLIB_VERSION
+BasicBuild "zlib" $env:ZLIB_VERSION $env:ZLIB_VERSION
 BasicBuild "protobuf" $env:PROTOBUF_VERSION "all"
