@@ -1,3 +1,10 @@
+function ErrorOnExeFailure {
+  if (-not $?)
+  {
+    throw 'Last EXE Call Failed!'
+  }
+}
+
 # TODO: Move to base image
 Write-Host "Installing conan..."
 choco install conan -y --no-progress
@@ -17,7 +24,7 @@ conan user ci-rustusbip -r mersive -p "$env:ARTIFACTORY_PASSWORD"
 $SETTINGS_RELEASE = "-s build_type=Release"
 $SETTINGS_DEBUG = "-s build_type=Debug"
 
-$SETTINGS_ALL = $SETTINGS_DEBUG, $SETTINGS_RELEASE
+$SETTINGS_ALL = $SETTINGS_DEBUG,$SETTINGS_RELEASE
 
 function BasicBuild($libraryName, $libraryVersion, $libraryPath, $libraryOptions)
 {
@@ -26,25 +33,32 @@ function BasicBuild($libraryName, $libraryVersion, $libraryPath, $libraryOptions
     pushd "recipes/$libraryName/$libraryPath"
 
     $COORDINATE="$libraryName/$libraryVersion@"
-    Write-Host "Installing [$COORDINATE]"
+    Write-Host "[$COORDINATE]: Installing"
     conan install . $COORDINATE "$libraryOptions" "$SETTINGS_CONFIGURATION"
+    ErrorOnExeFailure
 
-    Write-Host "Getting sources of [$COORDINATE]"
+    Write-Host "[$COORDINATE]: Getting Sources"
     conan source .
+    ErrorOnExeFailure
 
-    Write-Host "Building [$COORDINATE]"
+    Write-Host "[$COORDINATE]: Building"
     conan build .
+    ErrorOnExeFailure
 
-    Write-Host "Exporting [$COORDINATE]"
+    Write-Host "[$COORDINATE]: Exporting Package"
     conan export-pkg . "$COORDINATE" 
+    ErrorOnExeFailure
 
-    Write-Host "Uploading [$COORDINATE]"
+    Write-Host "[$COORDINATE]: Uploading to Mersive Artifactory"
     conan upload "$COORDINATE" --all -c -r mersive
+    ErrorOnExeFailure
 
-    Write-Host "Done building [$COORDINATE]!"
-
+    Write-Host "[$COORDINATE]: Cleaning Up"
     git clean -xffd
+    ErrorOnExeFailure
     popd
+
+    Write-Host "[$COORDINATE]: Done!"
   }
 }
 
