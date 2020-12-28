@@ -21,8 +21,8 @@ Write-Host "Adding Mersive's Conan Remote Repository"
 conan remote add mersive "https://artifactory.mersive.xyz/artifactory/api/conan/conan-mersive"
 conan user ci-rustusbip -r mersive -p "$env:ARTIFACTORY_PASSWORD"
 
-$SETTINGS_RELEASE = "-s build_type=Release"
-$SETTINGS_DEBUG = "-s build_type=Debug"
+$SETTINGS_RELEASE = "-sbuild_type=Release"
+$SETTINGS_DEBUG = "-sbuild_type=Debug"
 
 $SETTINGS_ALL = $SETTINGS_DEBUG,$SETTINGS_RELEASE
 
