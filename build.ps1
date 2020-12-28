@@ -1,7 +1,14 @@
+# TODO: Move to base image
 Write-Host "Installing conan..."
 choco install conan -y --no-progress
 $env:Path += ";C:\Program Files\Conan\conan"
 conan --version
+
+# TODO: Move to base image
+Write-Host "Installing git..."
+choco install git -y --no-progress
+$env:Path += ";C:\Program Files\Git\cmd"
+git --version
 
 Write-Host "Adding Mersive's Conan Remote Repository"
 conan remote add mersive "https://artifactory.mersive.xyz/artifactory/api/conan/conan-mersive"
