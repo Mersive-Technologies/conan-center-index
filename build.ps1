@@ -7,30 +7,39 @@ Write-Host "Adding Mersive's Conan Remote Repository"
 conan remote add mersive "https://artifactory.mersive.xyz/artifactory/api/conan/conan-mersive"
 conan user ci-rustusbip -r mersive -p "$env:ARTIFACTORY_PASSWORD"
 
+$SETTINGS_RELEASE = "-s build_type=Release"
+$SETTINGS_DEBUG = "-s build_type=Debug"
+
+$SETTINGS_ALL = $SETTINGS_DEBUG, $SETTINGS_RELEASE
+
 function BasicBuild($libraryName, $libraryVersion, $libraryPath, $libraryOptions)
 {
-  Write-Host "Performing a build of [$libraryName] with version [$libraryVersion]:"
-  pushd "recipes/$libraryName/$libraryPath"
+  foreach ($SETTINGS_CONFIGURATION in $SETTINGS_ALL) {
+    Write-Host "Performing a build of [$libraryName] with version [$libraryVersion]:"
+    pushd "recipes/$libraryName/$libraryPath"
 
-  $COORDINATE="$libraryName/$libraryVersion@"
-  Write-Host "Installing [$COORDINATE]"
-  conan install . $COORDINATE "$libraryOptions"
+    $COORDINATE="$libraryName/$libraryVersion@"
+    Write-Host "Installing [$COORDINATE]"
+    conan install . $COORDINATE "$libraryOptions" "$SETTINGS_CONFIGURATION"
 
-  Write-Host "Getting sources of [$COORDINATE]"
-  conan source .
+    Write-Host "Getting sources of [$COORDINATE]"
+    conan source .
 
-  Write-Host "Building [$COORDINATE]"
-  conan build .
+    Write-Host "Building [$COORDINATE]"
+    conan build .
 
-  Write-Host "Exporting [$COORDINATE]"
-  conan export-pkg . "$COORDINATE"
+    Write-Host "Exporting [$COORDINATE]"
+    conan export-pkg . "$COORDINATE" 
 
-  Write-Host "Uploading [$COORDINATE]"
-  conan upload "$COORDINATE" --all -c -r mersive
+    Write-Host "Uploading [$COORDINATE]"
+    conan upload "$COORDINATE" --all -c -r mersive
 
-  Write-Host "Done building [$COORDINATE]!"
-  popd
+    Write-Host "Done building [$COORDINATE]!"
+
+    git clean -xffd
+    popd
+  }
 }
 
 BasicBuild "zlib" $env:ZLIB_VERSION $env:ZLIB_VERSION
-BasicBuild "protobuf" $env:PROTOBUF_VERSION "all" "-o protobuf:shared=True"
+BasicBuild "protobuf" $env:PROTOBUF_VERSION "all"
