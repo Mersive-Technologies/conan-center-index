@@ -12,6 +12,10 @@ $env:Path += ";C:\Program Files\Conan\conan"
 conan --version
 
 # TODO: Move to base image
+Write-Host "Installing conan..."
+choco install windows-sdk-8.1 -y --no-progress
+
+# TODO: Move to base image
 Write-Host "Installing git..."
 choco install git -y --no-progress
 $env:Path += ";C:\Program Files\Git\cmd"
