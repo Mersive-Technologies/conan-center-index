@@ -32,11 +32,11 @@ function BasicBuild($libraryName, $libraryVersion, $libraryPath, $libraryOptions
 {
   foreach ($SETTINGS_CONFIGURATION in $SETTINGS_ALL) {
     Write-Host "Performing a build of [$libraryName] with version [$libraryVersion]:"
-    pushd "recipes/$libraryName/$libraryPath"
+    Push-Location "recipes/$libraryName/$libraryPath"
 
     $COORDINATE="$libraryName/$libraryVersion@"
     Write-Host "[$COORDINATE]: Installing"
-    conan install . $COORDINATE $libraryOptions $SETTINGS_CONFIGURATION
+    Invoke-Expression "conan install . $COORDINATE $libraryOptions $SETTINGS_CONFIGURATION"
     ErrorOnExeFailure
 
     Write-Host "[$COORDINATE]: Getting Sources"
@@ -58,7 +58,7 @@ function BasicBuild($libraryName, $libraryVersion, $libraryPath, $libraryOptions
     Write-Host "[$COORDINATE]: Cleaning Up"
     git clean -xffd
     ErrorOnExeFailure
-    popd
+    Pop-Location
 
     Write-Host "[$COORDINATE]: Done!"
   }
