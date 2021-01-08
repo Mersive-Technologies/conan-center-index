@@ -71,4 +71,5 @@ function BasicBuild($libraryName, $libraryVersion, $libraryPath, $libraryOptions
 BasicBuild "zlib" "1.2.11" "1.2.11"
 BasicBuild "libsodium" "1.0.18" "1.0.18"
 BasicBuild "zeromq" "4.3.3" "all"
+BasicBuild "cppzmq" "4.7.1" "all"
 BasicBuild "protobuf" "3.12.4" "all"
