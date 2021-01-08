@@ -52,7 +52,7 @@ function BasicBuild($libraryName, $libraryVersion, $libraryPath, $libraryOptions
     ErrorOnExeFailure
 
     Write-Host "[$COORDINATE]: Exporting Package"
-    conan export-pkg . "$COORDINATE" 
+    conan export-pkg --force . "$COORDINATE"
     ErrorOnExeFailure
 
     Write-Host "[$COORDINATE]: Uploading to Mersive Artifactory"
