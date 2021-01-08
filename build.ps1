@@ -36,7 +36,7 @@ function BasicBuild($libraryName, $libraryVersion, $libraryPath, $libraryOptions
 
     $COORDINATE="$libraryName/$libraryVersion@"
     Write-Host "[$COORDINATE]: Installing"
-    conan install . $COORDINATE "$libraryOptions" "$SETTINGS_CONFIGURATION"
+    conan install . $COORDINATE $libraryOptions $SETTINGS_CONFIGURATION
     ErrorOnExeFailure
 
     Write-Host "[$COORDINATE]: Getting Sources"
