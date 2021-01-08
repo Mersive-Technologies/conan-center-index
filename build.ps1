@@ -21,10 +21,12 @@ Write-Host "Adding Mersive's Conan Remote Repository"
 conan remote add mersive "https://artifactory.mersive.xyz/artifactory/api/conan/conan-mersive"
 conan user ci-rustusbip -r mersive -p "$env:ARTIFACTORY_PASSWORD"
 
-$SETTINGS_RELEASE = "-sbuild_type=Release"
-$SETTINGS_DEBUG = "-sbuild_type=Debug"
+$SETTINGS_RELEASE_32 = "-sbuild_type=Release -sarch=x86"
+$SETTINGS_RELEASE_64 = "-sbuild_type=Release -sarch=x86_64"
+$SETTINGS_DEBUG_32 = "-sbuild_type=Debug -sarch=x86"
+$SETTINGS_DEBUG_64 = "-sbuild_type=Debug -sarch=x86_64"
 
-$SETTINGS_ALL = $SETTINGS_DEBUG,$SETTINGS_RELEASE
+$SETTINGS_ALL = $SETTINGS_RELEASE_32,$SETTINGS_RELEASE_64,$SETTINGS_DEBUG_32,$SETTINGS_DEBUG_64
 
 function BasicBuild($libraryName, $libraryVersion, $libraryPath, $libraryOptions)
 {
